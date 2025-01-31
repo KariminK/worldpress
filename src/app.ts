@@ -1,11 +1,16 @@
 import express from "express";
-import dotenv from "dotenv";
-
-dotenv.config();
+import passport from "passport";
+import { configuredJwtStrategy } from "./configs";
+import bodyParser from "body-parser";
 
 const app = express();
-const port = process.env.PORT ?? 3000;
 
-app.listen(port, () => {
-  console.log("Server running! Port: ", port);
+passport.use(configuredJwtStrategy);
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.get("/", (req, res) => {
+  res.send("Api is running!");
 });
+export default app;

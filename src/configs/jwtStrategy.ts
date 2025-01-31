@@ -1,6 +1,5 @@
 import jwt, { VerifyCallback } from "passport-jwt";
 import prisma from "./prisma";
-import { User } from "@prisma/client";
 
 const JwtStrategy = jwt.Strategy;
 const ExtractJwt = jwt.ExtractJwt;
@@ -15,10 +14,10 @@ const options = {
   secretOrKey: jwtSecret,
 };
 
-const verify: VerifyCallback = async (userPayload: User, done) => {
+const verify: VerifyCallback = async (userPayload: UserPayload, done) => {
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userPayload.id },
+      where: { email: userPayload.email, password: userPayload.password },
     });
     if (!user) {
       return done(null, false);
@@ -29,6 +28,6 @@ const verify: VerifyCallback = async (userPayload: User, done) => {
     done(error, false);
   }
 };
-const configuredStrategy = new JwtStrategy(options, verify);
+const configuredJwtStrategy = new JwtStrategy(options, verify);
 
-export default configuredStrategy;
+export default configuredJwtStrategy;
