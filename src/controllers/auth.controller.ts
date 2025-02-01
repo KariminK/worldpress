@@ -2,7 +2,7 @@ import { prisma } from "../configs";
 import { AuthError } from "../validations";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { Request, Response } from "express";
+import { RequestHandler } from "express";
 
 dotenv.config();
 
@@ -12,14 +12,13 @@ const tokenExpireInSec = Number(process.env.TOKEN_EXPIRE_DURATION) ?? 300;
 if (!tokenSecret)
   throw new Error("You must provide token secret in your .env file");
 
-async function logIn(req: Request, res: Response) {
+const logIn: RequestHandler = async (req, res) => {
   const { email, password } = req.body;
   const user = await prisma.user.findUnique({ where: { email, password } });
 
   if (!user) {
-    return res
-      .status(401)
-      .send(new AuthError(401, "Invalid Login or Password"));
+    res.status(401).send(new AuthError(401, "Invalid Login or Password"));
+    return;
   }
 
   const userPayload: UserPayload = {
@@ -32,10 +31,20 @@ async function logIn(req: Request, res: Response) {
     expiresIn: tokenExpireInSec,
   });
 
-  return res.send({
+  res.send({
     message: "Authorized Correctly!",
     token,
   });
-}
+};
 
-export default { logIn };
+const signIn: RequestHandler = async (req, res, next) => {
+  try {
+    const { email, username, password } = req.body;
+    await prisma.user.create({ data: { email, password, username } });
+    res.status(200).send({ message: "Signed in successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { logIn, signIn };

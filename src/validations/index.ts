@@ -1,3 +1,4 @@
 import AuthError from "./authError";
+import validateSignIn from "./userValidation";
 
-export { AuthError };
+export { AuthError, validateSignIn };
