@@ -45,6 +45,13 @@ const logIn: RequestHandler = async (req, res) => {
 const signIn: RequestHandler = async (req, res, next) => {
   try {
     const { email, username, password } = req.body;
+    const user = await prisma.user.findUnique({ where: { email, username } });
+    if (user) {
+      res
+        .status(409)
+        .send(new AuthError(409, "User with this email already exists"));
+      return;
+    }
     const hashedPassword = await bcrypt.hash(password, 15);
     await prisma.user.create({
       data: {
