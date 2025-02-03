@@ -30,6 +30,7 @@ const logIn: RequestHandler = async (req, res) => {
     id: user.id,
     email,
     username: user.username,
+    profileImage: user.profileImage,
   };
 
   const token = jwt.sign(userPayload, tokenSecret, {
@@ -66,4 +67,20 @@ const signIn: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { logIn, signIn };
+const getUserInfo: RequestHandler = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (!user) {
+      res.status(404).send(new AuthError(404, "Usuer not found"));
+      return;
+    }
+    const { password, ...publicData } = user;
+
+    res.send(publicData);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { logIn, signIn, getUserInfo };
