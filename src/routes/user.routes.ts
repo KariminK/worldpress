@@ -16,4 +16,6 @@ userRouter.post(
 
 userRouter.post("/log-in", userController.logIn);
 
+userRouter.put("/", userController.updateUsername);
+
 export default userRouter;

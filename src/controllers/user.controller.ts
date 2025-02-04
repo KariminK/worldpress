@@ -40,6 +40,7 @@ const logIn: RequestHandler = async (req, res) => {
   res.send({
     message: "Authorized Correctly!",
     token,
+    user: userPayload,
   });
 };
 
@@ -83,4 +84,19 @@ const getUserInfo: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { logIn, signIn, getUserInfo };
+const updateUsername: RequestHandler = async (req, res, next) => {
+  try {
+    const { username, email } = req.body;
+
+    const { password, ...updatedUser } = await prisma.user.update({
+      where: { email },
+      data: { username },
+    });
+
+    res.send({ message: "updated correctly", user: updatedUser });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { logIn, signIn, getUserInfo, updateUsername };
