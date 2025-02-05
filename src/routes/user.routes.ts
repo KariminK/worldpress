@@ -2,6 +2,7 @@ import { Router } from "express";
 import { validateSignIn } from "../validations";
 import { checkValidationResult } from "../middlewares";
 import { userController } from "../controllers";
+import passport from "passport";
 
 const userRouter = Router();
 
@@ -16,6 +17,10 @@ userRouter.post(
 
 userRouter.post("/log-in", userController.logIn);
 
-userRouter.put("/", userController.updateUsername);
+userRouter.put(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  userController.updateUsername
+);
 
 export default userRouter;

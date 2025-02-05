@@ -1,3 +1,3 @@
 import checkValidationResult from "./checkValidationResult";
-
-export { checkValidationResult };
+import errorMiddleware from "./errorMiddleware";
+export { checkValidationResult, errorMiddleware };
