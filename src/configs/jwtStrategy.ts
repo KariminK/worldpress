@@ -16,12 +16,14 @@ const options = {
 
 const verify: VerifyCallback = async (userPayload: UserPayload, done) => {
   try {
+    console.log("Payload: ", userPayload);
     const user = await prisma.user.findUnique({
       where: { email: userPayload.email },
     });
     if (!user) {
       return done(null, false);
     } else {
+      console.log("Verified user: ", user);
       return done(null, user);
     }
   } catch (error) {

@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs";
 
 dotenv.config();
 
-const tokenSecret = process.env.TOKEN_SECRET ?? "";
+const tokenSecret = process.env.STRATEGY_SECRET ?? "";
 const tokenExpireInSec = Number(process.env.TOKEN_EXPIRE_DURATION) ?? 300;
 
 if (!tokenSecret)
@@ -28,7 +28,7 @@ const logIn: RequestHandler = async (req, res) => {
 
   const userPayload: UserPayload = {
     id: user.id,
-    email,
+    email: user.email,
     username: user.username,
     profileImage: user.profileImage,
   };
@@ -47,11 +47,17 @@ const logIn: RequestHandler = async (req, res) => {
 const signIn: RequestHandler = async (req, res, next) => {
   try {
     const { email, username, password } = req.body;
-    const user = await prisma.user.findUnique({ where: { email, username } });
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email }, { username }],
+      },
+    });
     if (user) {
       res
         .status(409)
-        .send(new AuthError(409, "User with this email already exists"));
+        .send(
+          new AuthError(409, "User with this email or username already exists")
+        );
       return;
     }
     const hashedPassword = await bcrypt.hash(password, 15);
