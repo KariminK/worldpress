@@ -1,3 +1,3 @@
 import userRouter from "./user.routes";
-
-export { userRouter };
+import postRouter from "./post.routes";
+export { userRouter, postRouter };
