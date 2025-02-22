@@ -1,7 +1,5 @@
 import { RequestHandler } from "express";
 
-const createPost: RequestHandler = (req, res) => {
-  res.send("ok");
-};
+const createPost: RequestHandler = (req, res) => {};
 
 export default { createPost };

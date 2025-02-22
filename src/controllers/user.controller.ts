@@ -2,8 +2,13 @@ import { prisma } from "../configs";
 import { AuthError } from "../validations";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { RequestHandler } from "express";
 import bcrypt from "bcryptjs";
+import {
+  GetInfoRequestHandler,
+  LogInRequestHandler,
+  SignInRequestHandler,
+  UpdateUsernameRequestHandler,
+} from "../types/user";
 
 dotenv.config();
 
@@ -13,7 +18,7 @@ const tokenExpireInSec = Number(process.env.TOKEN_EXPIRE_DURATION) ?? 300;
 if (!tokenSecret)
   throw new Error("You must provide token secret in your .env file");
 
-const logIn: RequestHandler = async (req, res) => {
+const logIn: LogInRequestHandler = async (req, res) => {
   const { email, password } = req.body;
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
@@ -26,7 +31,7 @@ const logIn: RequestHandler = async (req, res) => {
     return;
   }
 
-  const userPayload: UserPayload = {
+  const userPayload = {
     id: user.id,
     email: user.email,
     username: user.username,
@@ -44,7 +49,7 @@ const logIn: RequestHandler = async (req, res) => {
   });
 };
 
-const signIn: RequestHandler = async (req, res, next) => {
+const signIn: SignInRequestHandler = async (req, res, next) => {
   try {
     const { email, username, password } = req.body;
     const user = await prisma.user.findFirst({
@@ -74,7 +79,7 @@ const signIn: RequestHandler = async (req, res, next) => {
   }
 };
 
-const getUserInfo: RequestHandler = async (req, res, next) => {
+const getUserInfo: GetInfoRequestHandler = async (req, res, next) => {
   try {
     const { username } = req.params;
     const user = await prisma.user.findUnique({ where: { username } });
@@ -82,7 +87,7 @@ const getUserInfo: RequestHandler = async (req, res, next) => {
       res.status(404).send(new AuthError(404, "Usuer not found"));
       return;
     }
-    const { password, ...publicData } = user;
+    const { password, id, email, ...publicData } = user;
 
     res.send(publicData);
   } catch (error) {
@@ -90,7 +95,7 @@ const getUserInfo: RequestHandler = async (req, res, next) => {
   }
 };
 
-const updateUsername: RequestHandler = async (req, res, next) => {
+const updateUsername: UpdateUsernameRequestHandler = async (req, res, next) => {
   try {
     const { username, email } = req.body;
 
