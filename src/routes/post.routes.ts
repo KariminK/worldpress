@@ -4,10 +4,10 @@ import passport from "passport";
 
 const postRouter = Router();
 
-postRouter.post(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  postController.createPost
-);
+// You have to auth for every endpoint
+postRouter.use(passport.authenticate("jwt", { session: false }));
+
+postRouter.post("/", postController.createPost);
+postRouter.delete("/:id", postController.deletePost);
 
 export default postRouter;
