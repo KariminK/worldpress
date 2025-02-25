@@ -37,3 +37,19 @@ export type GetPostRequestHandler = RequestHandler<
   {},
   GetQuery
 >;
+
+// update post types
+
+interface UpdateReqParams {
+  id?: string;
+}
+interface UpdateReqBody {
+  content: string;
+  title: string;
+}
+
+export type UpdatePostRequestHandler = RequestHandler<
+  UpdateReqParams,
+  {} | FailureResponse,
+  UpdateReqBody
+>;
