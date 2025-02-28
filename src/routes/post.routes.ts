@@ -5,8 +5,9 @@ import passport from "passport";
 const postRouter = Router();
 
 // You have to auth for every endpoint
-postRouter.use(passport.authenticate("jwt", { session: false }));
+// postRouter.use(passport.authenticate("jwt", { session: false }));
 
+postRouter.get("/", postController.getPost);
 postRouter.post("/", postController.createPost);
 postRouter.delete("/:id", postController.deletePost);
 postRouter.put("/:id", postController.updatePost);

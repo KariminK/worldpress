@@ -1,3 +1,4 @@
 import userController from "./user.controller";
 import postController from "./post.controller";
-export { userController, postController };
+import commentController from "./comment.controller";
+export { userController, postController, commentController };
