@@ -1,7 +1,7 @@
 import express from "express";
 import passport from "passport";
 import { configuredJwtStrategy } from "./configs";
-import { postRouter, userRouter } from "./routes";
+import { commentRouter, postRouter, userRouter } from "./routes";
 import { errorMiddleware } from "./middlewares";
 
 const app = express();
@@ -13,5 +13,6 @@ app.use(express.json());
 
 app.use("/user", userRouter);
 app.use("/post", postRouter);
+app.use("/comment", commentRouter);
 app.use(errorMiddleware);
 export default app;

@@ -1,3 +1,5 @@
 import userRouter from "./user.routes";
 import postRouter from "./post.routes";
-export { userRouter, postRouter };
+import commentRouter from "./comment.routes";
+
+export { userRouter, postRouter, commentRouter };

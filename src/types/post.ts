@@ -1,7 +1,7 @@
 import { Post } from "@prisma/client";
 import { RequestHandler } from "express";
 
-interface FailureResponse {
+interface StatusResponse {
   status: number;
   message: string;
 }
@@ -33,7 +33,7 @@ interface GetResBody {
 
 export type GetPostRequestHandler = RequestHandler<
   {},
-  GetResBody | FailureResponse,
+  GetResBody | StatusResponse,
   {},
   GetQuery
 >;
@@ -50,6 +50,6 @@ interface UpdateReqBody {
 
 export type UpdatePostRequestHandler = RequestHandler<
   UpdateReqParams,
-  {} | FailureResponse,
+  {} | StatusResponse,
   UpdateReqBody
 >;
