@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { prisma } from "../configs";
 import {
   CreateCommentRequestHandler,
@@ -23,7 +23,9 @@ const getComment: GetCommentRequestHandler = async (req, res, next) => {
     const { id } = req.query;
 
     if (!id) {
-      const comments = await prisma.comment.findMany({ where: { postId } });
+      const comments = await prisma.comment.findMany({
+        where: { postId: Number(postId) },
+      });
       if (!comments) {
         res.status(404).send({ status: 404, message: "Comment not found" });
         return;
@@ -49,14 +51,17 @@ const deleteComment: DeleteCommentRequestHandler = async (req, res, next) => {
   try {
     const { commentId } = req.params;
     const deletedComment = await prisma.comment.delete({
-      where: { id: commentId },
+      where: { id: Number(commentId) },
     });
-    if (!deletedComment) {
+    res.send({ status: 200, message: "Comment deleted successfully" });
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
       res.status(404).send({ status: 404, message: "Comment not found" });
       return;
     }
-    res.send({ status: 200, message: "Comment deleted successfully" });
-  } catch (error) {
     next(error);
   }
 };
