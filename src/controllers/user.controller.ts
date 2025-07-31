@@ -20,6 +20,7 @@ if (!tokenSecret)
 
 const logIn: LogInRequestHandler = async (req, res) => {
   const { email, password } = req.body;
+
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
     res.status(401).send(new AuthError(401, "Invalid Login or Password"));
