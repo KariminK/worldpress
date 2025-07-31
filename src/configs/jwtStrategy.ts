@@ -1,6 +1,8 @@
 import jwt, { VerifyCallback } from "passport-jwt";
 import prisma from "./prisma";
 import { UserPayload } from "../types/user";
+import { configDotenv } from "dotenv";
+configDotenv();
 
 const JwtStrategy = jwt.Strategy;
 const ExtractJwt = jwt.ExtractJwt;

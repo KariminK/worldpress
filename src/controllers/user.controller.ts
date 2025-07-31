@@ -84,7 +84,7 @@ const getUserInfo: GetInfoRequestHandler = async (req, res, next) => {
     const { username } = req.params;
     const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {
-      res.status(404).send(new AuthError(404, "Usuer not found"));
+      res.status(404).send(new AuthError(404, "User not found"));
       return;
     }
     const { password, id, email, ...publicData } = user;
